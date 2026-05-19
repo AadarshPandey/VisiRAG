@@ -35,40 +35,40 @@ flowchart TD
 
     %% Data Input Tier
     subgraph Input_Tier [Document Input]
-        pdf[PDF Document File]
+        pdf["PDF Document File"]
     end
 
     %% Hybrid Loader Subgraph
     subgraph Loaders [Hybrid Loader - backend.py]
-        pdf_miner[pdfminer.six<br>Text Engine]
-        pdf_plumber[pdfplumber<br>Table & BBox Engine]
-        pymupdf[PyMuPDF<br>Image Engine]
+        pdf_miner["pdfminer.six<br>Text Engine"]
+        pdf_plumber["pdfplumber<br>Table and BBox Engine"]
+        pymupdf["PyMuPDF<br>Image Engine"]
     end
 
     %% Orchestration Pipeline Subgraph
     subgraph Orchestration [RAG Pipeline Orchestration]
-        splitter[Recursive Character Splitter<br>Isolated Image Chunks]
-        img_mgr[Image Manager<br>Multi-format Mapping]
-        retrieval_chain[Conversational Retrieval Chain<br>LangChain & Memory]
+        splitter["Recursive Character Splitter<br>Isolated Image Chunks"]
+        img_mgr["Image Manager<br>Multi-format Mapping"]
+        retrieval_chain["Conversational Retrieval Chain<br>LangChain and Memory"]
     end
 
     %% Storage & Artifacts Subgraph
     subgraph Storage [Vector Database & Directory Storage]
-        chroma_db[(Chroma DB<br>rag_collection)]
-        extracted_imgs[(Extracted Images Folder)]
+        chroma_db[("Chroma DB<br>rag_collection")]
+        extracted_imgs[("Extracted Images Folder")]
     end
 
     %% External Interfaces Subgraph
     subgraph External_APIs [External Cloud APIs]
-        azure_openai[Azure OpenAI<br>GPT Vision / LLM]
-        hf_embeddings[HuggingFace<br>e5-large-v2]
+        azure_openai["Azure OpenAI<br>GPT Vision / LLM"]
+        hf_embeddings["HuggingFace<br>e5-large-v2"]
     end
 
     %% Presentation Layer Subgraph
     subgraph Frontend [Streamlit UI - frontend.py]
-        st_ui[Streamlit UI Interface]
-        st_state[Session State<br>Engine & Chat History]
-        st_render[Dynamic Layout Renderer<br>Inline Text + Images]
+        st_ui["Streamlit UI Interface"]
+        st_state["Session State<br>Engine and Chat History"]
+        st_render["Dynamic Layout Renderer<br>Inline Text and Images"]
     end
 
     %% Execution and Processing Flows
@@ -90,10 +90,10 @@ flowchart TD
     
     %% User Query & Runtime Inference Flows
     st_ui --> st_state
-    st_state -->|Invokes .query| retrieval_chain
+    st_state -->|Invokes query pipeline| retrieval_chain
     
     retrieval_chain -->|Vector Similarity Search| chroma_db
-    retrieval_chain -->|Context + Query Prompt| azure_openai
+    retrieval_chain -->|Context and Query Prompt| azure_openai
     retrieval_chain -->|Regex Image Reference Lookups| img_mgr
     
     retrieval_chain -->|Returns Structured JSON Payload| st_render
